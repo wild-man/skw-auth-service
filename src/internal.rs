@@ -30,7 +30,7 @@ async fn internal_get_key(state: &AppState, key_uuid: Uuid) -> Result<HttpPayloa
 
     let e = Entity::get_by_id(pool, key_uuid)
         .await?
-        .ok_or_else(|| ServiceHttpError::NotFound)?;
+        .ok_or(ServiceHttpError::NotFound)?;
 
     Ok(HttpPayload::GetKeyById {
         id: e.id,
