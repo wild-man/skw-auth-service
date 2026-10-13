@@ -15,10 +15,10 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY --from=builder /build/target/release/auth-service /app/auth-service
+COPY --from=builder /build/target/release/auth-http-service /app/auth-http-service
 COPY --from=builder /build/services/auth/dev.json /app/dev.json
 
 ENV ENV=dev
 ENV RUST_LOG=info
 
-CMD ["/app/auth-service"]
+CMD ["/app/auth-http-service"]

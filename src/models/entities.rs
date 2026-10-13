@@ -63,4 +63,21 @@ impl Entity {
 
         Ok(row.map(Entity::from))
     }
+
+    /// Insert a new entity row, letting Postgres generate `id` (`DEFAULT uuidv7()`).
+    pub async fn insert(pool: &PgPool, parent_id: Uuid, public_key: String, private_key: Option<String>, enabled: bool, roles: Vec<i64>, created_id: Uuid) -> Result<Entity, PostgresError> {
+        let row: EntityRow = sqlx::query_as(&format!(
+            "INSERT INTO entities (parent_id, public_key, private_key, enabled, roles, created_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING {ENTITY_COLUMNS}"
+        ))
+        .bind(parent_id)
+        .bind(public_key)
+        .bind(private_key)
+        .bind(enabled)
+        .bind(roles)
+        .bind(created_id)
+        .fetch_one(pool)
+        .await?;
+
+        Ok(Entity::from(row))
+    }
 }

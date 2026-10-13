@@ -1,7 +1,8 @@
 {
   "envOverrides": {
     "/service/bindAddress": "SERVICE_BIND_ADDRESS",
-    "/postgres/master/url": "POSTGRES_MASTER_URL"
+    "/postgres/master/url": "POSTGRES_MASTER_URL",
+    "/iggy/url": "IGGY_URL"
   },
   "service": {
     "name": "skw-auth-service",
@@ -19,5 +20,9 @@
       "createServiceSchema": false,
       "setSearchPathByService": true
     }
+  },
+  "iggy": {
+    "url": "iggy://iggy:Secret123!@skw-iggy:3000",
+    "streamPrefix": "api-gate-stream"
   }
 }

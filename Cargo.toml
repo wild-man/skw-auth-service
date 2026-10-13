@@ -1,12 +1,16 @@
 [package]
-name = "skw-auth-service"
+name = "skw-auth-http-service"
 version = { workspace = true }
 edition = { workspace = true }
 authors = ["Sergey Kutsenko <sergey.wild.man@gmail.com>"]
 
 [[bin]]
-name = "auth-service"
-path = "src/main.rs"
+name = "auth-http-service"
+path = "src/http.rs"
+
+[[bin]]
+name = "auth-stream-service"
+path = "src/stream.rs"
 
 [[bin]]
 name = "migrate"
