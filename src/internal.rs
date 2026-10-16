@@ -11,7 +11,11 @@ pub struct HttpRequest<M> {
 }
 
 // #[axum::debug_handler]
-pub async fn http_handler(State(state): State<AppState>, _headers: HeaderMap, AxumJson(req): AxumJson<HttpRequest<HttpMethodInternal>>) -> impl IntoAxumResponse {
+pub async fn http_handler(
+    State(state): State<AppState>,
+    _headers: HeaderMap,
+    AxumJson(req): AxumJson<HttpRequest<HttpMethodInternal>>,
+) -> impl IntoAxumResponse {
     match req.method {
         HttpMethodInternal::GetKeyById { id } => match internal_get_key(&state, id).await {
             Ok(p) => JsonRpcResponse::new(req, p).into_response(),
@@ -26,7 +30,7 @@ async fn internal_get_key(state: &AppState, key_uuid: Uuid) -> Result<HttpPayloa
 
     let e = Entity::get_by_id(pool, key_uuid)
         .await?
-        .ok_or(ServiceHttpError::NotFound)?;
+        .ok_or(SkwServiceHttpError::NotFound)?;
 
     Ok(HttpPayloadInternal::GetKeyById {
         id: e.id,

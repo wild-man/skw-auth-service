@@ -12,7 +12,7 @@ use skw_lib_shared::prelude::{
     APP,
     chrono::*,
     iggy::{RpcRequestMeta, run_service_consumers_all_topic_types},
-    jsonrpc::ServiceHttpError,
+    jsonrpc::SkwServiceHttpError,
     log::*,
     redis::{AsyncCommands, ConnectionManager},
     serde::*,
@@ -27,7 +27,7 @@ mod models;
 const SERVICE_ROOT_KEY_PATH: &str = "/service/rootKey";
 
 #[tokio::main]
-async fn main() -> anyhow::Result<()> {
+async fn main() -> Result<(), AppError> {
     let root_entity_uuid = Uuid::parse_str(APP.config.expect_str(SERVICE_ROOT_KEY_PATH)).expect("service.rootKey must be a valid uuid");
     let db_pools = APP.postgres.connect().await?;
 

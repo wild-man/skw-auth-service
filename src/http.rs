@@ -25,7 +25,7 @@ struct AppState {
 }
 
 #[tokio::main]
-async fn main() -> anyhow::Result<()> {
+async fn main() -> Result<(), AppError> {
     let service_name = APP.config.expect_string(SERVICE_NAME_PATH);
     let bind_addr = APP.config.expect_string(SERVICE_BIND_ADDRESS);
     let root_entity_uuid = Uuid::parse_str(APP.config.expect_str(SERVICE_ROOT_KEY_PATH)).expect("service.rootKey must be a valid uuid");

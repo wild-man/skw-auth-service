@@ -5,7 +5,7 @@
 //! PKCS#8 PEM (armor stripped); `private_key` is only present when the caller
 //! opted to have it stored.
 
-use skw_lib_shared::prelude::postgres::PostgresError;
+use skw_lib_shared::prelude::postgres::SkwPostgresError;
 use skw_lib_shared::prelude::serde::*;
 use skw_lib_shared::prelude::uuid::*;
 use sqlx::PgPool;
@@ -53,7 +53,7 @@ impl Entity {
     ///
     /// The `search_path` is pinned to the service schema at connection time, so
     /// the unqualified `entities` reference resolves to `skw-auth-service.entities`.
-    pub async fn get_by_id(pool: &PgPool, id: Uuid) -> Result<Option<Entity>, PostgresError> {
+    pub async fn get_by_id(pool: &PgPool, id: Uuid) -> Result<Option<Entity>, SkwPostgresError> {
         let row: Option<EntityRow> = sqlx::query_as(&format!(
             "SELECT {ENTITY_COLUMNS} FROM entities WHERE id = $1"
         ))
@@ -65,7 +65,15 @@ impl Entity {
     }
 
     /// Insert a new entity row, letting Postgres generate `id` (`DEFAULT uuidv7()`).
-    pub async fn insert(pool: &PgPool, parent_id: Uuid, public_key: String, private_key: Option<String>, enabled: bool, roles: Vec<i64>, created_id: Uuid) -> Result<Entity, PostgresError> {
+    pub async fn insert(
+        pool: &PgPool,
+        parent_id: Uuid,
+        public_key: String,
+        private_key: Option<String>,
+        enabled: bool,
+        roles: Vec<i64>,
+        created_id: Uuid,
+    ) -> Result<Entity, SkwPostgresError> {
         let row: EntityRow = sqlx::query_as(&format!(
             "INSERT INTO entities (parent_id, public_key, private_key, enabled, roles, created_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING {ENTITY_COLUMNS}"
         ))
