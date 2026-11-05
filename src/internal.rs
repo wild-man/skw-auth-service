@@ -26,7 +26,7 @@ pub async fn http_handler(
 
 async fn internal_get_key(state: &AppState, key_uuid: Uuid) -> Result<HttpPayloadInternal, AppError> {
     let pool = state.db_pools.slave().await?;
-    dbg!(&key_uuid);
+    // dbg!(&key_uuid);
 
     let e = Entity::get_by_id(pool, key_uuid)
         .await?

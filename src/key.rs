@@ -4,7 +4,6 @@
 use crate::models::entities::Entity;
 use ed25519_dalek::SigningKey;
 use ed25519_dalek::pkcs8::{EncodePrivateKey, EncodePublicKey};
-use rand::rngs::OsRng;
 use skw_lib_shared::prelude::{AppError, base64::*, uuid::*};
 use sqlx::PgPool;
 
@@ -16,7 +15,7 @@ pub struct CreatedKey {
 }
 
 pub async fn create(pool: &PgPool, root_id: Uuid, store_private_key: bool) -> Result<CreatedKey, AppError> {
-    let signing_key = SigningKey::generate(&mut OsRng);
+    let signing_key = SigningKey::generate(&mut rand::rng());
     let public_key_der = signing_key
         .verifying_key()
         .to_public_key_der()

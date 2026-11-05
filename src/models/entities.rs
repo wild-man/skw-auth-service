@@ -30,7 +30,11 @@ pub struct Entity {
 }
 
 /// Column list matching the `EntityRow` tuple decode order below.
-const ENTITY_COLUMNS: &str = "id, parent_id, public_key, private_key, enabled, roles, created_id";
+macro_rules! entity_columns {
+    () => {
+        "id, parent_id, public_key, private_key, enabled, roles, created_id"
+    };
+}
 
 type EntityRow = (Uuid, Uuid, String, Option<String>, bool, Vec<i64>, Uuid);
 
@@ -54,8 +58,10 @@ impl Entity {
     /// The `search_path` is pinned to the service schema at connection time, so
     /// the unqualified `entities` reference resolves to `skw-auth-service.entities`.
     pub async fn get_by_id(pool: &PgPool, id: Uuid) -> Result<Option<Entity>, SkwPostgresError> {
-        let row: Option<EntityRow> = sqlx::query_as(&format!(
-            "SELECT {ENTITY_COLUMNS} FROM entities WHERE id = $1"
+        let row: Option<EntityRow> = sqlx::query_as(concat!(
+            "SELECT ",
+            entity_columns!(),
+            " FROM entities WHERE id = $1"
         ))
         .bind(id)
         .fetch_optional(pool)
@@ -74,8 +80,9 @@ impl Entity {
         roles: Vec<i64>,
         created_id: Uuid,
     ) -> Result<Entity, SkwPostgresError> {
-        let row: EntityRow = sqlx::query_as(&format!(
-            "INSERT INTO entities (parent_id, public_key, private_key, enabled, roles, created_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING {ENTITY_COLUMNS}"
+        let row: EntityRow = sqlx::query_as(concat!(
+            "INSERT INTO entities (parent_id, public_key, private_key, enabled, roles, created_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING ",
+            entity_columns!()
         ))
         .bind(parent_id)
         .bind(public_key)
