@@ -47,7 +47,7 @@ async fn handle_message(
     db_pools: PostgresPools<PostgresConnected>,
     root_entity_uuid: Uuid,
 ) -> Result<RpcPayload, AppError> {
-    debug!("{:?}", method);
+    // debug!("{:?}", method);
     match method {
         RpcMethod::CreateKey { store_private_key } => {
             let pool = db_pools.master().await?;
